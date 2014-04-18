@@ -45,6 +45,7 @@ void sort(T* a, int n)
 	}
 }
 
+// const char* 特化（全特化）
 template <>
 void sort(const char* a[], int n)
 {
@@ -61,6 +62,23 @@ void sort(const char* a[], int n)
 	}
 }
 
+// 指针特化, 数组里存的都是指针（偏特化）
+template < typename T >
+void sort(T* a[], int n)
+{
+	//反复n-1次
+	for(int i=0; i<n-1; i++){
+		//	第i次从第i～n个数据中找到最小元素是谁
+		int min = i;
+		for(int j=i+1; j<n; j++)
+			if(*a[j]<*a[min])	// 比较地址没意义，当然要比较指针指向的数值了
+				min = j;
+		//	把它跟第i个元素交换
+		swap(a[min],a[i]);
+	}
+}
+
+
 template < typename T >
 void show(T* a, int size)
 {
@@ -69,7 +87,7 @@ void show(T* a, int size)
 	cout << std::endl;
 }
 
-// 特化
+// 单个元素特化
 template < typename T >
 void show(T d)
 {
@@ -92,6 +110,14 @@ void show(T(&a)[N])	//数组引用
 	cout << std::endl;
 }
 
+template < typename T, int N >
+void show(T*(&a)[N])	//数组引用
+{
+	for (int i = 0; i < N; i++)
+		cout << *a[i] << ' ';
+	cout << std::endl;
+}
+
 int main()
 {
 	int a[6] = {20, 8, 12, 98, 66, 10};
@@ -110,6 +136,10 @@ int main()
 	show(1237.2837);
 	show(s);
 
+	int* ap[4] = {new int(5), new int(2), new int(8), new int(7)};
+	double* bp[3] = {new double(2.2), new double(1.8), new double(6.6)};
+	sort(ap, 4); sort(bp, 3);
+	show(ap); show(bp);
 	std::cin.get();
 	return 0;
 }
